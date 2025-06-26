@@ -11,12 +11,10 @@ import (
 var log = l.New(os.Stdout, "", l.LstdFlags|l.Lshortfile)
 
 func main() {
-	var host string
+	var host string = "localhost:6969"
 
 	if len(os.Args) > 1 {
 		host = os.Args[1]
-	} else {
-		host = "localhost:6969"
 	}
 
 	conn, err := net.Dial("tcp", host)
@@ -27,7 +25,7 @@ func main() {
 	}
 
 	defer log.Printf("Disconnected from server")
-	defer conn.Close()
+	defer log.Fatal(conn.Close())
 
 	log.Printf("Connected to the server")
 
@@ -49,8 +47,7 @@ func main() {
 		}
 	}()
 
-	wg.Wait()               // Wait for both goroutines to finish
-	log.Fatal(conn.Close()) // Close the connection when done
+	wg.Wait() // Wait for both goroutines to finish
 }
 
 func readResponse(conn net.Conn, done chan bool) {
